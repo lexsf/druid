@@ -70,7 +70,7 @@
             <includes>
                 <include>*</include>
             </includes>
-            <outputDirectory>conf-quickstart/_common/druid/</outputDirectory>
+            <outputDirectory>conf-quickstart/druid/_common/</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../examples/conf-quickstart/druid/broker</directory>
@@ -80,7 +80,7 @@
             <outputDirectory>conf-quickstart/druid/broker</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../examples/conf-quickstart/coordinator</directory>
+            <directory>../examples/conf-quickstart/druid/coordinator</directory>
             <includes>
                 <include>*</include>
             </includes>
