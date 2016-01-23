@@ -5,10 +5,11 @@
 
 h2. Getting Started
 * "Concepts":../design/
-* "Quickstart Batch Ingestion":../tutorials/quickstart.html
-* "Quickstart Streaming Ingestion":../tutorials/quickstart-streaming.html
-* "Clustering":../tutorials/cluster.html
+* "Quickstart":../tutorials/quickstart.html
 * "Loading Data":../tutorials/ingestion.html
+* "Loading Batch Data":../tutorials/ingestion-batch.html
+* "Loading Streaming Data":../tutorials/ingestion-streams.html
+* "Clustering":../tutorials/cluster.html
 
 h2. Data Ingestion
 * "Data Formats":../ingestion/data-formats.html
