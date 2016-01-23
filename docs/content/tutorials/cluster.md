@@ -295,8 +295,10 @@ This also allows you take advantage of Druid's built-in MiddleManager
 autoscaling facility.
 ```
 
-You can also start Tranquility server on the same hardware that holds MiddleManagers and Historicals depending on how you are 
-choosing to ingest data.
+If you are doing push-based stream ingestion with Kafka or over HTTP, you can also start Tranquility server on the same 
+hardware that holds MiddleManagers and Historicals. For large scale production, MiddleManagers and Tranquility server 
+can still be co-located. If you are running Tranquility (not server) with a stream processor, you can co-locate 
+Tranquility with the stream processor and not require Tranquility server.
 
 ```bash
 curl -O http://static.druid.io/tranquility/releases/tranquility-distribution-0.7.2.tgz
@@ -305,6 +307,7 @@ cd tranquility-distribution-0.7.2.tgz
 bin/tranquility server -configFile conf/tranquility/server.yaml
 ```
 
+TODO
 
 ## Start Druid Broker
 
