@@ -21,7 +21,6 @@ Some great folks have written their own libraries to interact with Druid
 
 #### JavaScript
 
-* [facetjs/facetjs](https://github.com/facetjs/facetjs) - A general query planner for Druid written in JavaScript
 * [implydata/plywood](https://github.com/implydata/plywood) - A higher level API for Druid. An extension of the work that was started in facet.js.
 
 #### Node.js
@@ -39,12 +38,8 @@ Some great folks have written their own libraries to interact with Druid
 
 #### SQL
 
+* [implydata/plyql](https://github.com/implydata/plyql) - A command line interface for issuing SQL queries to Druid via [plywood](https://github.com/implydata/plywood)
 * [srikalyc/Sql4D](https://github.com/srikalyc/Sql4D) - A SQL client for Druid. Used in production at Yahoo.
-* [facetjs/facet-cli](https://github.com/facetjs/facet-cli) - A command line interface for issuing SQL queries to Druid via [facetjs](https://github.com/facetjs/facetjs)
-
-#### TypeScript
-
-* [facetjs/typescript-druid](https://github.com/facetjs/typescript-druid) - TypeScript declarations for the Druid API
 
 
 Community Helper Libraries
