@@ -3,27 +3,25 @@ layout: doc_page
 ---
 
 Stream Pull Ingestion
-=======================
+=====================
 
 If you have an external service that you want to pull data from, you have two options. The simplest
 option is to set up a "copying" service that reads from the data source and writes to Druid using
 the [stream push method](stream-push.html).
 
 Another option is *stream pull*. With this approach, a Druid Realtime Node ingests data from a
-[Firehose](http://druid.io/docs/latest/ingestion/firehose.html) connected to the data you want to
+[Firehose](../ingestion/firehose.html) connected to the data you want to
 read. We recommend using Druid's stream push ingestion before looking at this page.
+
+## Realtime Node Ingestion
+
+Much of the configuration governing Realtime nodes and the ingestion of data is set in the Realtime spec file, discussed on this page.
 
 For general Real-time Node information, see [here](../design/realtime.html).
 
 For Real-time Node Configuration, see [Realtime Configuration](../configuration/realtime.html).
 
 For writing your own plugins to the real-time node, see [Firehose](../ingestion/firehose.html).
-
-There are two ways of ingesting real-time data. This can be achieved with a standalone real-time node, or using the [Tranquility](https://github.com/druid-io/tranquility) client library as part of the [Indexing Service](../design/indexing-service.html). For a full explanation of why there are two methods, please see [this link](https://groups.google.com/forum/#!searchin/druid-development/fangjin$20yang$20%22thoughts%22/druid-development/aRMmNHQGdhI/muBGl0Xi_wgJ). If you are comfortable with the limitations of standalone real-time nodes, you can use them as they are easier to set up. The indexing service is a more robust and highly available solution but will also require more effort to set up.
-
-## Realtime Node Ingestion
-
-Much of the configuration governing Realtime nodes and the ingestion of data is set in the Realtime spec file, discussed on this page.
 
 <a id="realtime-specfile"></a>
 ## Realtime "specFile"
@@ -267,4 +265,3 @@ The following table summarizes constraints between settings in the spec file for
 |maxRowsInMemory| The max number of ingested rows to hold in memory before a flush to disk | number of un-persisted post-aggregation rows in memory is also constrained by intermediatePersistPeriod | use this to avoid running out of heap if too many rows in an intermediatePersistPeriod |
 
 The normal, expected use cases have the following overall constraints: `intermediatePersistPeriod ≤ windowPeriod < segmentGranularity` and `queryGranularity ≤ segmentGranularity`
-

@@ -85,7 +85,7 @@ you already have a Hadoop deployment).
 
 ### S3
 
-In `conf/_common/common.runtime.properties`,
+In `conf/druid/_common/common.runtime.properties`,
 
 - Set `druid.extensions.loadList=["druid-s3-extensions"]`.
 
@@ -118,9 +118,9 @@ druid.indexer.logs.s3Prefix=druid/indexing-logs
 
 ### HDFS
 
-In `conf/_common/common.runtime.properties`,
+In `conf/druid/_common/common.runtime.properties`,
 
-- Set `druid.extensions.coordinates=["io.druid.extensions:druid-hdfs-storage"]`.
+- Set `druid.extensions.loadList=["io.druid.extensions:druid-hdfs-storage"]`.
 
 - Comment out the configurations for local storage under "Deep Storage" and "Indexing service logs".
 
@@ -149,7 +149,7 @@ Also,
 
 - Place your Hadoop configuration XMLs (core-site.xml, hdfs-site.xml, yarn-site.xml, 
 mapred-site.xml) on the classpath of your Druid nodes. You can do this by copying them into 
-`conf/_common/`.
+`conf/druid/_common/`.
 
 ## Configure cluster for Hadoop data loads
 
@@ -163,7 +163,7 @@ a path on HDFS that you'd like to use for temporary files required during the in
 
 - Place your Hadoop configuration XMLs (core-site.xml, hdfs-site.xml, yarn-site.xml, 
 mapred-site.xml) on the classpath of your Druid nodes. You can do this by copying them into 
-`conf/_common/core-site.xml`, `conf/_common/hdfs-site.xml`, and so on.
+`conf/druid/_common/core-site.xml`, `conf/druid/_common/hdfs-site.xml`, and so on.
 
 Note that you don't need to use HDFS deep storage in order to load data from Hadoop. For example, if 
 your cluster is running on Amazon Web Services, we recommend using S3 for deep storage even if you 
@@ -174,7 +174,7 @@ are loading data using Hadoop or Elastic MapReduce.
 In this simple cluster, you will deploy a single Druid Coordinator, a 
 single Druid Overlord, a single ZooKeeper instance, and an embedded Derby metadata store on the same server.
 
-In `conf/_common/common.runtime.properties`, replace 
+In `conf/druid/_common/common.runtime.properties`, replace 
 "zk.host.ip" with the IP address of the machine that runs your ZK instance:
 
 - `druid.zk.service.host`
@@ -256,22 +256,25 @@ rsync -az druid-0.9.0/ COORDINATION_SERVER:druid-0.9.0/
 Log on to your coordination server and install Zookeeper:
  
 ```bash
-curl http://www.gtlib.gatech.edu/pub/apache/zookeeper/zookeeper-3.4.7/zookeeper-3.4.7.tar.gz -o $zookeeper-3.4.7.tar.gz
-tar xzf $zookeeper-3.4.7.tar.gz
-cd zookeeper-3.4.7
+curl http://www.gtlib.gatech.edu/pub/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz -o $zookeeper-3.4.6.tar.gz
+tar xzf $zookeeper-3.4.6.tar.gz
+cd zookeeper-3.4.6
 cp conf/zoo_sample.cfg conf/zoo.cfg
 ./bin/zkServer.sh start
+
+```note-caution
+In production, we also recommend running a ZooKeeper cluster on its own dedicated hardware.
 ```
 
 On your coordination server, *cd* into the distribution and start up the coordination services:
 
 ```bash
-java `cat conf-quickstart/coordinator/jvm.config | xargs` -cp conf-quickstart/_common:conf-quickstart/coordinator:lib/*.jar io.druid.cli.Main server coordinator > var/druid/log/coordinator.log
-java `cat conf-quickstart/overlord/jvm.config | xargs` -cp conf-quickstart/_common:conf-quickstart/overlord:lib/*.jar io.druid.cli.Main server overlord > var/druid/log/overlord.log
+java `cat conf/druid/coordinator/jvm.config | xargs` -cp conf/druid/_common:conf/druid/coordinator:lib/*.jar io.druid.cli.Main server coordinator > var/log/druid/coordinator.log
+java `cat conf/druid/overlord/jvm.config | xargs` -cp conf/druid/_common:conf/druid/overlord:lib/*.jar io.druid.cli.Main server overlord > var/log/druid/overlord.log
 ```
 
 You should see a log message printed out for each service that starts up. You can view detailed logs 
-for any service by looking in the `var/druid/log/` directory using another terminal.
+for any service by looking in the `var/log/druid` directory using another terminal.
 
 ## Start Historicals and MiddleManagers
 
@@ -280,17 +283,28 @@ Copy the Druid distribution and your edited configurations to your servers set a
 On each one, *cd* into the distribution and run this command to start a Data server:
 
 ```bash
-java `cat conf-quickstart/historical/jvm.config | xargs` -cp conf-quickstart/_common:conf-quickstart/historical:lib/*.jar io.druid.cli.Main server historical > var/druid/log/historical.log
-java `cat conf-quickstart/middleManager/jvm.config | xargs` -cp conf-quickstart/_common:conf-quickstart/middleManager:lib/*.jar io.druid.cli.Main server middleManager > var/druid/log/middleManager.log
+java `cat conf/druid/historical/jvm.config | xargs` -cp conf/druid/_common:conf/druid/historical:lib/*.jar io.druid.cli.Main server historical > var/log/druid/historical.log
+java `cat conf/druid/middleManager/jvm.config | xargs` -cp conf/druid/_common:conf/druid/middleManager:lib/*.jar io.druid.cli.Main server middleManager > var/log/druid/middleManager.log
 ```
 
 You can add more servers with Druid Historicals and MiddleManagers as needed.
 
 ```note-info
 For clusters with complex resource allocation needs, you can break apart Historicals and MiddleManagers and scale the components individually. 
-This also allows you take advantage of Druid's builtin MiddleManager
+This also allows you take advantage of Druid's built-in MiddleManager 
 autoscaling facility.
 ```
+
+You can also start Tranquility server on the same hardware that holds MiddleManagers and Historicals depending on how you are 
+choosing to ingest data.
+
+```bash
+curl -O http://static.druid.io/tranquility/releases/tranquility-distribution-0.7.2.tgz
+tar -xzf tranquility-distribution-0.7.2.tgz
+cd tranquility-distribution-0.7.2.tgz
+bin/tranquility server -configFile conf/tranquility/server.yaml
+```
+
 
 ## Start Druid Broker
 
@@ -299,7 +313,7 @@ Copy the Druid distribution and your edited configurations to your servers set a
 On each one, *cd* into the distribution and run this command to start a Broker:
 
 ```bash
-java `cat conf-quickstart/broker/jvm.config | xargs` -cp conf-quickstart/_common:conf-quickstart/broker:lib/*.jar io.druid.cli.Main server broker > var/druid/log/broker.log
+java `cat conf/druid/broker/jvm.config | xargs` -cp conf/druid/_common:conf/druid/broker:lib/*.jar io.druid.cli.Main server broker > var/log/druid/broker.log
 ```
 
 You can add more Brokers as needed based on query load.
